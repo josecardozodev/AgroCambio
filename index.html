@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Painel de cotações de dólar, euro e yuan para o agronegócio exportador.">
+  <title>AgroCâmbio Web</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <nav class="navbar" aria-label="Navegação principal">
+      <span class="logo">🌱 AgroCâmbio Web</span>
+      <ul class="menu">
+        <li><a href="#cotacoes">Cotações</a></li>
+        <li><a href="#conversor">Conversor</a></li>
+        <li><a href="#historico">Histórico</a></li>
+        <li><a href="#como-funciona">Como funciona</a></li>
+      </ul>
+    </nav>
+    <div class="hero">
+      <h1>Painel de Cotações para o Agronegócio Exportador</h1>
+      <p>Acompanhe o dólar, o euro e o yuan em tempo real e descubra quanto vale, em reais, a receita da sua exportação.</p>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- FUNÇÃO 1: cotações ao vivo -->
+    <section id="cotacoes" class="painel">
+      <div class="painel-topo">
+        <h2>Cotações do dia</h2>
+        <button type="button" id="btnAtualizar" class="btn-secundario">Atualizar agora</button>
+      </div>
+
+      <!-- Mensagem amigável quando a Internet/API falha -->
+      <p id="aviso" class="aviso" role="alert" hidden></p>
+
+      <div class="cotacoes-grid">
+        <article class="card">
+          <h3>USD <small>Dólar americano</small></h3>
+          <p class="valor" id="USD">...</p>
+          <p class="variacao" id="var-USD"></p>
+        </article>
+        <article class="card">
+          <h3>EUR <small>Euro</small></h3>
+          <p class="valor" id="EUR">...</p>
+          <p class="variacao" id="var-EUR"></p>
+        </article>
+        <article class="card">
+          <h3>CNY <small>Yuan chinês</small></h3>
+          <p class="valor" id="CNY">...</p>
+          <p class="variacao" id="var-CNY"></p>
+        </article>
+      </div>
+
+      <p class="nota" id="atualizacao">Carregando cotações...</p>
+      <p class="nota">Valores de compra (bid) em relação ao real. Atualização automática a cada 60 segundos.</p>
+    </section>
+
+    <!-- FUNÇÃO 2: conversor de receita -->
+    <section id="conversor" class="painel">
+      <h2>Conversor de receita</h2>
+      <p class="descricao">Informe o valor da sua venda em dólar (ou a quantidade e o preço) e veja quanto isso representa em reais, pela cotação atual do dólar.</p>
+
+      <form id="formConversor" novalidate>
+        <fieldset class="modos">
+          <legend>Como deseja informar a venda?</legend>
+          <label><input type="radio" name="modo" value="total" checked> Valor total em US$</label>
+          <label><input type="radio" name="modo" value="unitario"> Quantidade × preço em US$</label>
+        </fieldset>
+
+        <div id="campos-total" class="campos">
+          <label for="valorUSD">Valor da venda (US$)</label>
+          <input type="number" id="valorUSD" min="0" step="any" inputmode="decimal" placeholder="Ex.: 25000">
+        </div>
+
+        <div id="campos-unitario" class="campos campos-duplos" hidden>
+          <div>
+            <label for="quantidade">Quantidade (sacas, toneladas...)</label>
+            <input type="number" id="quantidade" min="0" step="any" inputmode="decimal" placeholder="Ex.: 500">
+          </div>
+          <div>
+            <label for="precoUnitario">Preço por unidade (US$)</label>
+            <input type="number" id="precoUnitario" min="0" step="any" inputmode="decimal" placeholder="Ex.: 18.50">
+          </div>
+        </div>
+
+        <button type="submit" id="btnConverter">Converter</button>
+      </form>
+
+      <p id="resultado" class="resultado" role="status" aria-live="polite"></p>
+      <p class="nota">Regra: receita em R$ = valor em US$ × cotação de compra (bid) atual do dólar.</p>
+    </section>
+
+    <!-- BÔNUS: histórico dos últimos 7 dias -->
+    <section id="historico" class="painel">
+      <div class="painel-topo">
+        <h2>Histórico dos últimos 7 dias</h2>
+        <div class="seletor">
+          <label for="moedaGrafico">Moeda:</label>
+          <select id="moedaGrafico">
+            <option value="USD">USD – Dólar</option>
+            <option value="EUR">EUR – Euro</option>
+            <option value="CNY">CNY – Yuan</option>
+          </select>
+        </div>
+      </div>
+      <p id="avisoGrafico" class="aviso" role="alert" hidden></p>
+      <div class="grafico-wrap">
+        <div id="grafico" aria-live="polite">Carregando histórico...</div>
+      </div>
+      <p class="nota" id="resumo-grafico"></p>
+    </section>
+
+    <!-- Explicação client side x server side -->
+    <section id="como-funciona" class="painel">
+      <h2>Como funciona</h2>
+      <p>
+        Neste projeto, o <strong>lado cliente (client side)</strong> é tudo o que roda no seu navegador:
+        o HTML, o CSS e o JavaScript que você baixa ao abrir a página. É o JavaScript que faz a requisição
+        com <code>fetch()</code> à API de câmbio, calcula a conversão da receita e atualiza a tela.
+        O <strong>lado servidor (server side)</strong> fica em computadores remotos: o servidor da AwesomeAPI,
+        que recebe o pedido e devolve as cotações em formato JSON, e o servidor web da máquina virtual Linux,
+        que apenas entrega os arquivos do site ao navegador, sem fazer nenhum cálculo.
+      </p>
+      <p class="nota">Fonte dos dados: AwesomeAPI Cotações (docs.awesomeapi.com.br).</p>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>AgroCâmbio Web - Projeto Integrador</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
